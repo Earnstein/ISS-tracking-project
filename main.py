@@ -1,20 +1,21 @@
+import os
 import requests
 from datetime import datetime
 import smtplib
 import time
 
 MY_EMAIL = "bdamilola00@gmail.com"
-PASSWORD = "ykjtwzfjizzwbrqz"
-MSG = "Look up, the ISS is passing."
+PASSWORD = os.environ.get('PASSWORD')
+API_URL = os.environ.get("API_URL")
+API_URL_1 = os.environ.get("API_URL_1")
 
-MY_LAT = 7.258373
-MY_LONG = 5.149651
-
+MY_LAT = float(os.environ.get("MY_LAT"))
+MY_LONG = float(os.environ.get("MY_LONG"))
 
 def is_iss_overhead():
     """ This check is the iss is close to my location"""
 
-    response = requests.get(url="http://api.open-notify.org/iss-now.json")
+    response = requests.get(url=API_URL)
     response.raise_for_status()
     data = response.json()
 
@@ -34,7 +35,7 @@ def night_time():
         "formatted": 0,
     }
 
-    response = requests.get(url="https://api.sunrise-sunset.org/json", params=parameters, verify=False)
+    response = requests.get(url=API_URL_1, params=parameters, verify=False)
     response.raise_for_status()
 
     data = response.json()
@@ -53,6 +54,6 @@ while True:
             connection.login(user=MY_EMAIL, password=PASSWORD)
             connection.sendmail(from_addr=MY_EMAIL,
                                 to_addrs=MY_EMAIL,
-                                msg=f"Subject:ISS IS HERE\n\n{MSG}"
+                                msg="Subject:ISS IS HERE\n\nLook up, the ISS is passing."
                                 )
 
